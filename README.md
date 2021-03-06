@@ -1,8 +1,8 @@
 ![](public/static/images/cover.png)
 
-# HiÐe. | Offline First Decentralized CMS
+# HiÐΞ | Offline First Decentralized CMS
 
-HiÐe. is a PWA (Progressive Web App) that lets you manage your articles 100% offline without internet connection.
+HiÐΞ is a PWA (Progressive Web App) that lets you manage your articles 100% offline without internet connection.
 
 ## Installation
 
