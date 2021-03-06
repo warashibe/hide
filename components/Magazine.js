@@ -402,25 +402,59 @@ export default bind(
                                 <Box mr={3} width="100px" textAlign="right">
                                   {$.lang.who_can_view}
                                 </Box>
-                                <Box
-                                  onClick={() => {
-                                    fn.searchUserWithKey({
-                                      key: searchKey2,
-                                      state_name: "hit_users2",
-                                    })
-                                  }}
-                                  p={2}
-                                  color="white"
-                                  bg="#5386E4"
-                                  sx={{
-                                    border: "1px solid #5386E4",
-                                    borderRadius: "3px",
-                                    cursor: "pointer",
-                                    ":hover": { opacity: 0.75 },
-                                  }}
-                                >
-                                  {$.lang.get_all_users}
-                                </Box>
+                                {$.data_storage === "localforage" ? (
+                                  <Box
+                                    onClick={() => {
+                                      fn.searchUserWithKey({
+                                        key: searchKey2,
+                                        state_name: "hit_users2",
+                                      })
+                                    }}
+                                    p={2}
+                                    color="white"
+                                    bg="#5386E4"
+                                    sx={{
+                                      border: "1px solid #5386E4",
+                                      borderRadius: "3px",
+                                      cursor: "pointer",
+                                      ":hover": { opacity: 0.75 },
+                                    }}
+                                  >
+                                    {$.lang.get_all_users}
+                                  </Box>
+                                ) : (
+                                  <Flex alignItems="center">
+                                    <Input
+                                      value={searchKey2}
+                                      placeholder={$.lang.username}
+                                      width="150px"
+                                      onChange={e =>
+                                        setSearchKey2(e.target.value)
+                                      }
+                                      sx={{
+                                        borderRadius: "3px 0 0 3px",
+                                      }}
+                                    />
+                                    <Box
+                                      onClick={() => {
+                                        fn.searchUserWithKey({
+                                          key: searchKey2,
+                                        })
+                                      }}
+                                      p={2}
+                                      color="white"
+                                      bg="#5386E4"
+                                      sx={{
+                                        border: "1px solid #5386E4",
+                                        borderRadius: "0 3px 3px 0",
+                                        cursor: "pointer",
+                                        ":hover": { opacity: 0.75 },
+                                      }}
+                                    >
+                                      {$.lang.search}
+                                    </Box>
+                                  </Flex>
+                                )}
                               </Flex>
                               <Flex alignItems="center">
                                 <Box
@@ -513,25 +547,55 @@ export default bind(
                             <Box mr={3} width="100px" textAlign="right">
                               {$.lang.coauthoring}
                             </Box>
-                            <Box
-                              onClick={() => {
-                                fn.searchUserWithKey({
-                                  key: searchKey,
-                                  state_name: "hit_users",
-                                })
-                              }}
-                              p={2}
-                              color="white"
-                              bg="#5386E4"
-                              sx={{
-                                border: "1px solid #5386E4",
-                                borderRadius: "3px",
-                                cursor: "pointer",
-                                ":hover": { opacity: 0.75 },
-                              }}
-                            >
-                              {$.lang.get_all_users}
-                            </Box>
+                            {$.data_storage === "localforage" ? (
+                              <Box
+                                onClick={() => {
+                                  fn.searchUserWithKey({
+                                    key: searchKey,
+                                    state_name: "hit_users",
+                                  })
+                                }}
+                                p={2}
+                                color="white"
+                                bg="#5386E4"
+                                sx={{
+                                  border: "1px solid #5386E4",
+                                  borderRadius: "3px",
+                                  cursor: "pointer",
+                                  ":hover": { opacity: 0.75 },
+                                }}
+                              >
+                                {$.lang.get_all_users}
+                              </Box>
+                            ) : (
+                              <Flex alignItems="center">
+                                <Input
+                                  value={searchKey}
+                                  placeholder={$.lang.username}
+                                  width="150px"
+                                  onChange={e => setSearchKey(e.target.value)}
+                                  sx={{
+                                    borderRadius: "3px 0 0 3px",
+                                  }}
+                                />
+                                <Box
+                                  onClick={() => {
+                                    fn.searchUserWithKey({ key: searchKey })
+                                  }}
+                                  p={2}
+                                  color="white"
+                                  bg="#5386E4"
+                                  sx={{
+                                    border: "1px solid #5386E4",
+                                    borderRadius: "0 3px 3px 0",
+                                    cursor: "pointer",
+                                    ":hover": { opacity: 0.75 },
+                                  }}
+                                >
+                                  {$.lang.search}
+                                </Box>
+                              </Flex>
+                            )}
                           </Flex>
                           <Flex alignItems="center">
                             <Box mr={3} width="100px" textAlign="right"></Box>
@@ -687,9 +751,14 @@ export default bind(
                               <Box width={1}>
                                 {addIndex(map)((a, i) => {
                                   const author = author_map[a]
-
                                   return isNil(author) ? null : (
-                                    <Link href={`/users/${author.uid}`}>
+                                    <Link
+                                      href={
+                                        $.data_storage === "localforage"
+                                          ? `/user?id=${author.uid}`
+                                          : `/users/${author.uid}`
+                                      }
+                                    >
                                       <Box
                                         as="span"
                                         sx={{
@@ -1072,7 +1141,9 @@ export default bind(
                       setMagazine(new_magazine)
                       setEdit(null)
                       router.replace(
-                        `/magazine?id=${new_magazine.id}`,
+                        $.data_storage === "localforage"
+                          ? `/magazine?id=${new_magazine.id}`
+                          : `/magazines/${new_magazine.id}`,
                         undefined,
                         {
                           shallow: true,
@@ -1266,5 +1337,6 @@ export default bind(
     "hit_users",
     "hit_users2",
     "blog_user_map",
+    "data_storage",
   ]
 )

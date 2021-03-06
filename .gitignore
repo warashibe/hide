@@ -1,3 +1,5 @@
+nd/conf.*
+!nd/conf.js
 public/service-worker.js
 !nd/conf.sample.js
 firebase/functions/env.json
