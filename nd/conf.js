@@ -1,4 +1,10 @@
-module.exports = {
+import { mergeAll } from "ramda"
+let local = {}
+try {
+  local = require("nd/conf.local")
+} catch (e) {}
+
+const prod = {
   id: "hide",
   html: {
     title: "HiÐe. | Hi, Ðecentralization!",
@@ -7,3 +13,5 @@ module.exports = {
     "theme-color": "#5386E4",
   },
 }
+
+module.exports = mergeAll([prod, local])

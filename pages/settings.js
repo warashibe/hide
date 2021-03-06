@@ -18,32 +18,38 @@ export default bind(
       "setUser",
     ])
 
-    const [tab, setTab] = useState("users")
+    const [tab, setTab] = useState(
+      $.data_storage === "localforage" ? "users" : "lang"
+    )
     const [new_user, setNewUser] = useState("")
     const [importJSON, setImportJSON] = useState(null)
+    useEffect(() => {
+      if ($.data_storage === "firestore") setTab("lang")
+    }, [$.data_storage])
     let tmenu = []
-    tmenu.push({
-      index: 0,
-      text: $.lang.manage_users,
-      key: `users`,
-      awesome_icon: `fas fa-user`,
-      onClick: () => setTab("users"),
-    })
-    tmenu.push({
-      index: 1,
-      text: $.lang.export,
-      key: `lang`,
-      awesome_icon: `far fa-hdd`,
-      onClick: () => setTab("export"),
-    })
-    tmenu.push({
-      index: 2,
-      text: $.lang.import,
-      key: `lang`,
-      awesome_icon: `far fa-hdd`,
-      onClick: () => setTab("import"),
-    })
-
+    if ($.data_storage === "localforage") {
+      tmenu.push({
+        index: 0,
+        text: $.lang.manage_users,
+        key: `users`,
+        awesome_icon: `fas fa-user`,
+        onClick: () => setTab("users"),
+      })
+      tmenu.push({
+        index: 1,
+        text: $.lang.export,
+        key: `export`,
+        awesome_icon: `far fa-hdd`,
+        onClick: () => setTab("export"),
+      })
+      tmenu.push({
+        index: 2,
+        text: $.lang.import,
+        key: `import`,
+        awesome_icon: `far fa-hdd`,
+        onClick: () => setTab("import"),
+      })
+    }
     tmenu.push({
       index: 3,
       text: $.lang.language,
@@ -51,7 +57,6 @@ export default bind(
       awesome_icon: `fas fa-globe`,
       onClick: () => setTab("lang"),
     })
-
     useEffect(() => {
       if ($.user_init && tab === "users") fn.getUsers({})
     }, [$.user_init, tab])

@@ -34,19 +34,21 @@ export default bind(
     get,
     noComment,
   }) => {
-    const fn = init(["setUserLang", "initialize", "checkNotifications"])
+    const fn = init([
+      "logout",
+      "setStorage",
+      "setUserLang",
+      "initialize",
+      "checkNotifications",
+      "initializeOnline",
+    ])
+
     useEffect(() => {
-      if (
-        $.user_init &&
-        isNil($.user) &&
-        url.parse(location.href).path !== "/settings"
-      ) {
-        location.href = "/settings"
-      }
-    }, [$.user_init])
-    useEffect(() => {
-      fn.initialize()
+      fn.initialize({
+        cb: async ({ user }) => await fn.initializeOnline({ user }),
+      })
     }, [])
+
     useEffect(() => {
       ;(async () => {
         if (!isNil($.user)) {
@@ -87,7 +89,6 @@ export default bind(
       target: "_self",
       border: true,
     })
-
     if ($.user_init) {
       if (!isNil($.user)) {
         smenu.unshift({
@@ -95,7 +96,10 @@ export default bind(
           text: $.lang.mypage,
           key: `your_page`,
           awesome_icon: `fas fa-home`,
-          href: `/user?id=${$.user.uid}`,
+          href:
+            $.data_storage === "firestore"
+              ? `/users/${$.user.uid}`
+              : `/user?id=${$.user.uid}`,
           target: "_self",
         })
         smenu.unshift({
@@ -123,12 +127,56 @@ export default bind(
           href: "/comments",
           target: "_self",
         })
+      }
+
+      smenu.push({
+        index: 3,
+        text:
+          $.data_storage === "firestore" ? $.lang.language : $.lang.manage_data,
+        key: `backup`,
+        awesome_icon:
+          $.data_storage === "firestore" ? `fas fa-globe` : `far fa-hdd`,
+        href: "/settings",
+        target: "_self",
+      })
+    }
+    if ($.data_storage === "firestore") {
+      smenu.push({
+        index: 4,
+        text: !isNil($.user) ? $.lang.manage_accounts : $.lang.login,
+        key: `login`,
+        awesome_icon: `fas fa-sign-in-alt`,
+        href: "/login",
+        target: "_self",
+      })
+      if (!isNil($.user)) {
         smenu.push({
-          index: 3,
-          text: $.lang.manage_data,
-          key: `backup`,
-          awesome_icon: `far fa-hdd`,
-          href: "/settings",
+          index: 4.5,
+          text: $.lang.logout,
+          key: `logout`,
+          awesome_icon: `fas fa-sign-out-alt`,
+          target: "_self",
+          onClick: () => () => fn.logout(),
+        })
+      }
+      if ($.with_online) {
+        smenu.push({
+          index: 5,
+          text: $.lang.go_offline,
+          key: `offline`,
+          awesome_icon: `fas fa-power-off`,
+          onClick: () => () => fn.setStorage({ storage: "localforage" }),
+          target: "_self",
+        })
+      }
+    } else {
+      if ($.with_online) {
+        smenu.push({
+          index: 5,
+          text: $.lang.go_online,
+          key: `offline`,
+          awesome_icon: `fas fa-satellite-dish`,
+          onClick: () => () => fn.setStorage({ storage: "firestore" }),
           target: "_self",
         })
       }
@@ -152,23 +200,23 @@ export default bind(
           href: `/user-magazines?id=${$.user.uid}`,
           target: "_self",
         })
+        tmenu.push({
+          index: 3.6,
+          text: $.lang.create_article,
+          key: `top-edit`,
+          awesome_icon: `fas fa-edit`,
+          href: "/articles/edit",
+          target: "_self",
+        })
+        tmenu.push({
+          index: 3.7,
+          text: $.lang.create_magazine,
+          key: `top-edit-magazine`,
+          awesome_icon: `fas fa-edit`,
+          href: "/magazines/edit",
+          target: "_self",
+        })
       }
-      tmenu.push({
-        index: 3.6,
-        text: $.lang.create_article,
-        key: `top-edit`,
-        awesome_icon: `fas fa-edit`,
-        href: "/articles/edit",
-        target: "_self",
-      })
-      tmenu.push({
-        index: 3.7,
-        text: $.lang.create_magazine,
-        key: `top-edit-magazine`,
-        awesome_icon: `fas fa-edit`,
-        href: "/magazines/edit",
-        target: "_self",
-      })
     } else {
       tmenu = clone(tmenu)
     }
@@ -217,7 +265,7 @@ export default bind(
               icon_color={"#5386E4"}
               post_title={
                 post_title ||
-                ($.data_storage === "localforage" ? "Offline" : "Top")
+                ($.data_storage === "localforage" ? "Offline" : "Online")
               }
               logo_link={logo_link || "/"}
               size="sx"
@@ -252,5 +300,6 @@ export default bind(
     "data_storage",
     "user_init_remote",
     "isNotifications",
+    "with_online",
   ]
 )

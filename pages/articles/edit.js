@@ -41,7 +41,7 @@ export default bind(
       })
     }
     useEventListener("resize", () => checkHeight())
-    const fn = init(["getImages", "getLocalArticle"])
+    const fn = init(["getImages", "getLocalArticle", "getArticle"])
     useEffect(() => {
       checkHeight()
     })
@@ -54,11 +54,17 @@ export default bind(
       ;(async () => {
         if (!isNil($.user)) {
           if (!isNil(router.query.id)) {
-            const _article = await fn.getLocalArticle({
-              id: router.query.id,
-              user: $.user,
-              ignorePublished: true,
-            })
+            const _article =
+              $.data_storage === "localforage"
+                ? await fn.getLocalArticle({
+                    id: router.query.id,
+                    user: $.user,
+                    ignorePublished: true,
+                  })
+                : await fn.getArticle({
+                    id: router.query.id,
+                    user: $.user,
+                  })
             if (_article === false || isNil(_article)) {
               setIsOwner(false)
             } else {
@@ -120,7 +126,7 @@ export default bind(
       <Fragment>
         <NavCustomized
           noComment={true}
-          side_width={200}
+          side_width={230}
           chosen={tab}
           {...{ smenu, tmenu }}
         >

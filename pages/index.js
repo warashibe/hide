@@ -15,6 +15,7 @@ import { Flex, Box, Image } from "rebass"
 import Loading from "components/Loading"
 import NavCustomized from "components/NavCustomized"
 import Articles from "components/Articles"
+import Header from "online/components/Header"
 
 export default bind(
   ({ $, init, conf }) => {
@@ -54,16 +55,29 @@ export default bind(
     }
 
     const topics = compose(mergeLeft(extra), indexBy(prop("key")))($.topics)
-
     return (
       <Fragment>
         <NavCustomized side_selected="blogs">
+          {$.data_storage === "firestore" ? <Header /> : null}
           {isNil($.all_articles) ? (
-            <Box flex={1} width={1} flexWrap="wrap" bg="#eee" pb={2}>
+            <Box
+              flex={1}
+              width={1}
+              flexWrap="wrap"
+              bg="#eee"
+              pb={2}
+              pt={$.data_storage === "firestore" ? 2 : 0}
+            >
               <Loading text={$.lang.loading_article} />
             </Box>
           ) : (
-            <Box flex={1} width={1} flexWrap="wrap" bg="#eee">
+            <Box
+              flex={1}
+              width={1}
+              flexWrap="wrap"
+              bg="#eee"
+              pt={$.data_storage === "firestore" ? 2 : 0}
+            >
               <Flex
                 width={1}
                 justifyContent="center"
@@ -117,7 +131,10 @@ export default bind(
                               border:
                                 topic === v.key ? "3px solid #5386E4" : "",
                             }}
-                            src={v.src}
+                            src={
+                              v.src ||
+                              `https://firebasestorage.googleapis.com/v0/b/${conf.fb.id}.appspot.com/o/topics%2F${v.id}.${v.ext}?alt=media`
+                            }
                           />
                         )}
                       </Flex>
@@ -151,5 +168,14 @@ export default bind(
       </Fragment>
     )
   },
-  ["user", "lang", "isFB", "next_all_articles", "all_articles", "topics"]
+  [
+    "user",
+    "lang",
+    "isFB",
+    "next_all_articles",
+    "all_articles",
+    "topics",
+    "user_init",
+    "data_storage",
+  ]
 )

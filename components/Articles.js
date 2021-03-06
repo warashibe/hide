@@ -47,7 +47,9 @@ export default bind(
                     href={
                       isPrivate
                         ? `/articles/edit?id=${v.id}`
-                        : `/article?id=${v.id}`
+                        : $.data_storage === "localforage"
+                        ? `/article?id=${v.id}`
+                        : `/articles/${v.id}`
                     }
                     display="flex"
                     as="a"
@@ -223,5 +225,5 @@ export default bind(
       </Fragment>
     )
   },
-  ["lang"]
+  ["lang", "data_storage"]
 )

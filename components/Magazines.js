@@ -46,7 +46,11 @@ export default bind(
                   <Box
                     display="flex"
                     as="a"
-                    href={`/magazine?id=${v.id}`}
+                    href={
+                      $.data_storage === "localforage"
+                        ? `/magazine?id=${v.id}`
+                        : `/magazines/${v.id}`
+                    }
                     width={1}
                     height="405px"
                     flexWrap="wrap"
@@ -290,5 +294,5 @@ export default bind(
       </Fragment>
     )
   },
-  ["lang"]
+  ["lang", "data_storage"]
 )
