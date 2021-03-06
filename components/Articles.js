@@ -18,7 +18,7 @@ export default bind(
     router,
     noSort,
     nextFunc,
-    width = [1 / 4, null, 1 / 2, null, 1 / 3, null, 1 / 4],
+    width = [1, null, 1 / 2, null, 1 / 3, null, 1 / 4],
   }) => {
     return (
       <Fragment>
