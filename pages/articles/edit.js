@@ -326,7 +326,6 @@ export default bind(
     "blog_data",
     "user",
     "user_init",
-    "theme",
     "lang",
     "blog_history_cursor",
     "blog_updated",

@@ -12,6 +12,11 @@ const prod = {
     image: "http://localhost:3000/static/images/cover.png",
     "theme-color": "#5386E4",
   },
+  textile: {
+    key: "<YOUR_TEXTILE_USER_GROUP_KEY>",
+    secret: "<YOUR_TEXTILE_USER_GROUP_SECRET>",
+    application_name: "HiÐΞ",
+  },
 }
 
 module.exports = mergeAll([prod, local])
