@@ -17,6 +17,9 @@ const prod = {
     secret: "<YOUR_TEXTILE_USER_GROUP_SECRET>",
     application_name: "HiÐΞ",
   },
+  infura: {
+    id: "<YOUR_INFURA_ID>",
+  },
 }
 
 module.exports = mergeAll([prod, local])
