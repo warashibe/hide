@@ -32,6 +32,7 @@ export default bind(
     useEffect(() => {
       if ($.data_storage === "firestore") setTab("lang")
     }, [$.data_storage])
+
     let tmenu = []
     if ($.data_storage === "localforage") {
       tmenu.push({
@@ -336,7 +337,9 @@ export default bind(
                         fontSize="16px"
                         bg="#5386E4"
                         color="white"
-                        onClick={async () => setHub(await fn.connectHub({}))}
+                        onClick={async () => {
+                          setHub(await fn.connectHub({}))
+                        }}
                         sx={{
                           borderRadius: "3px",
                           cursor: "pointer",
