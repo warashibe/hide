@@ -12,6 +12,7 @@ import { compose, filter, isNil, map, includes } from "ramda"
 import { checkURL, useScript } from "lib/utils"
 import Note from "components/Note"
 import TOC from "components/TOC"
+import url from "url"
 
 const Script = props => {
   useScript(props.src + "?_=" + Date.now())
