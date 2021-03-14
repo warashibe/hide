@@ -182,11 +182,29 @@ export default ({ set, init, $, _article, router }) => {
       }
     })()
   }, [$.isFB, article])
+
   useEffect(() => {
     ;(async () => {
       if ($.isFB && !isNil(router.query.id)) {
         if ($.data_storage === "localforage") {
-          setArticle(await fn.getLocalArticle({ id: router.query.id }))
+          const offline_article = await fn.getLocalArticle({
+            id: router.query.id,
+          })
+          if (!isNil(offline_article) && offline_article.restricted) {
+            if (isNil($.user)) {
+              offline_article.no_display = true
+              setLoading(false)
+            } else {
+              if (
+                offline_article.uid !== $.user.uid &&
+                !includes($.user.uid)(offline_article.members || [])
+              ) {
+                offline_article.no_display = true
+                setLoading(false)
+              }
+            }
+          }
+          setArticle(offline_article)
         }
       }
     })()
@@ -195,7 +213,7 @@ export default ({ set, init, $, _article, router }) => {
   if (isNil(article) || article.no_display) {
     return (
       <NavCustomized>
-        {loading || true ? (
+        {loading ? (
           <Flex
             sx={{ position: "absolute", zIndex: 1000 }}
             width={1}
@@ -210,7 +228,7 @@ export default ({ set, init, $, _article, router }) => {
           </Flex>
         ) : (
           <Flex justifyContent="center" alignItems="center" height="100%">
-            {$.no_article}
+            {$.lang.no_article}
           </Flex>
         )}
       </NavCustomized>
